@@ -957,6 +957,24 @@ _CONFIGS = [
         wandb_enabled=False,
     ),
     #
+    # My configs.
+    #
+    TrainConfig(
+        # This config is for reinforced fine-tuning pi05
+        name="pi05_finetune",
+        model=pi0_config.Pi0Config(
+            pi05=True,
+            action_dim=32, 
+            action_horizon=10,
+        ),
+        pytorch_training_precision="bfloat16", # float32
+        weight_loader=weight_loaders.CheckpointWeightLoader("gs://openpi-assets/checkpoints/pi05_base/params"),
+        pytorch_weight_path="/data/cyh/model/openpi-python/pi05_base",
+        freeze_filter=pi0_config.Pi0Config(
+            paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"
+        ).get_freeze_filter(),
+    ),
+    #
     # RoboArena configs.
     #
     *roboarena_config.get_roboarena_configs(),
